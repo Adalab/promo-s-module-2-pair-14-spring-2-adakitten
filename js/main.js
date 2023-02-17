@@ -85,11 +85,20 @@ function addNewKitten(event) {
     const valueDesc = inputDesc.value;
     const valuePhoto = inputPhoto.value;
     const valueName = inputName.value;
-    if (valueDesc === "" && valuePhoto === "" && valueName === "") {
+    const valueRace = inputRace.value;
+    const newKittenDataObject = {
+        name: 'inputName.value',
+        desc: 'inputDesc.value',
+        photo: 'inputPhoto.value',
+        race: 'inputRace.value',
+    }
+    if (valueDesc === "" || valuePhoto === "" || valueName === "") {
         labelMessageError.innerHTML = "¡Uy! parece que has olvidado algo";
     } else {
         if (valueDesc !== "" && valuePhoto !== "" && valueName !== "") {
-            labelMessageError.innerHTML = "Mola! Un nuevo gatito en Adalab!";
+            labelMessageError.innerHTML = "";
+            kittenDataList.push(newKittenDataObject);
+            labelMesageError.innerHTML = 'Mola! Un nuevo gatito en Adalab!';
         }
     }
 }
