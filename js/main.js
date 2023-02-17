@@ -89,7 +89,7 @@ function addNewKitten(event) {
         labelMessageError.innerHTML = "¡Uy! parece que has olvidado algo";
     } else {
         if (valueDesc !== "" && valuePhoto !== "" && valueName !== "") {
-            labelMessageError.innerHTML = "";
+            labelMessageError.innerHTML = "Mola! Un nuevo gatito en Adalab!";
         }
     }
 }
