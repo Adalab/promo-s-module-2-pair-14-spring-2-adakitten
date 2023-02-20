@@ -10,11 +10,11 @@ const buttonCancelForm = document.querySelector('.js-btn-cancel');
 const inputDesc = document.querySelector('.js-input-desc');
 const inputPhoto = document.querySelector('.js-input-photo');
 const inputName = document.querySelector('.js-input-name');
+const inputRace = document.querySelector('.js-input-race');
 const linkNewFormElememt = document.querySelector('.js-button-new-form');
 const labelMessageError = document.querySelector('.js-label-error');
 const input_search_desc = document.querySelector('.js_in_search_desc');
-const inputRace = document.querySelector('.js-input-race');
-
+const input_search_race = document.querySelector('.js_in_search_race');//search race
 
 //Objetos con cada gatito
 const kittenData_1 = {
@@ -99,10 +99,17 @@ function addNewKitten(event) {
         if (valueDesc !== "" && valuePhoto !== "" && valueName !== "" && valueRace !=="") {
             labelMessageError.innerHTML = "Mola! Un nuevo gatito en Adalab!";
             kittenDataList.push(newKittenDataObject);
-            renderKittenList(kittenDataList);
+            inputDesc.value = "";
+            inputPhoto.value = "";
+            inputName.value = "";
+            inputRace.value = "";
+            renderKittenList(kittenDataList);//call to the list
+            
+            }
         }
-    }
-}
+   
+    };
+    
 //Cancelar la búsqueda de un gatito
 function cancelNewKitten(event) {
     event.preventDefault();
@@ -116,13 +123,17 @@ function cancelNewKitten(event) {
 //Filtrar por descripción
 function filterKitten(event) {
     event.preventDefault();
-    const descrSearchText = input_search_desc.value;
+    const descrSearchText = input_search_desc.value.toLowerCase();
+    const raceSearchText= input_search_race.value.toLowerCase(); //filter race
     listElement.innerHTML = "";
     for (const kittenItem of kittenDataList) {
-        if (kittenItem.desc.includes(descrSearchText)) {
-            listElement.innerHTML += renderKitten(kittenItem);
-        }
-    }
+       if (kittenItem.desc.includes(descrSearchText)) {
+         listElement.innerHTML += renderKitten(kittenItem);
+     }
+ }    
+  
+  //Vuelve a pintar el listado de gatitos filtrados en el HTML.
+  renderKittenList(kittenListFiltered);
 }
 
 //Mostrar el litado de gatitos en ell HTML
