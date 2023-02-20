@@ -13,7 +13,10 @@ const inputName = document.querySelector('.js-input-name');
 const linkNewFormElememt = document.querySelector('.js-button-new-form');
 const labelMessageError = document.querySelector('.js-label-error');
 const input_search_desc = document.querySelector('.js_in_search_desc');
+const input_search_race = document.querySelector('.js_in_search_race');
 const inputRace = document.querySelector('.js-input-race');
+const GITHUB_USER = 'Lurdesmg';
+const SERVER_URL = `https://dev.adalab.es/api/kittens/${GITHUB_USER}`;
 
 
 //Objetos con cada gatito
@@ -36,7 +39,30 @@ const kittenData_3 = {
     race: "Maine Coon",
 };
 
-const kittenDataList = [kittenData_1, kittenData_2, kittenData_3];
+//const kittenDataList = [kittenData_1, kittenData_2, kittenData_3];
+let kittenDataList = [];
+
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
+function render() {
+    for (const eachKitten of kittenDataList) {
+        listElement.innerHTML += `<li>${eachKitten.desc.race}`
+        console.log(render);
+    }
+}
+
+fetch(SERVER_URL, {
+    method: 'GET',
+    headers: {'Content-Type': 'application/json'},
+  }).then((response) => response.json())
+  .then((data)=> {
+    console.log(data);
+    kittenDataList = data.results.filter((kitten) => ({
+        desc: kitten.desc,
+        race: kitten.race,
+    }))
+    render();
+  })
+  //Completa el código;
 
 //Funciones
 function renderKitten(kittenData) {
@@ -99,6 +125,10 @@ function addNewKitten(event) {
         if (valueDesc !== "" && valuePhoto !== "" && valueName !== "" && valueRace !=="") {
             labelMessageError.innerHTML = "Mola! Un nuevo gatito en Adalab!";
             kittenDataList.push(newKittenDataObject);
+            inputDesc.value = "";
+            inputPhoto.value = "";
+            inputName.value = "";
+            inputRace.value = "";
             renderKittenList(kittenDataList);
         }
     }
@@ -117,12 +147,13 @@ function cancelNewKitten(event) {
 function filterKitten(event) {
     event.preventDefault();
     const descrSearchText = input_search_desc.value;
+    const raceSearchText = input_search_race.value
     listElement.innerHTML = "";
-    for (const kittenItem of kittenDataList) {
-        if (kittenItem.desc.includes(descrSearchText)) {
-            listElement.innerHTML += renderKitten(kittenItem);
-        }
-    }
+    const kittenListFiltered = kittenDataList
+        .filter((kitten) => kitten.desc.includes(descrSearchText))
+        .filter((kitten) => kitten.race.includes(raceSearchText));
+  //Vuelve a pintar el listado de gatitos filtrados en el HTML.
+     renderKittenList(kittenListFiltered);
 }
 
 //Mostrar el litado de gatitos en ell HTML
