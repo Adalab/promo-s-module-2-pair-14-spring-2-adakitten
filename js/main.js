@@ -19,7 +19,8 @@ const GITHUB_USER = 'Lurdesmg';
 const SERVER_URL = `https://dev.adalab.es/api/kittens/${GITHUB_USER}`;
 
 
-//Objetos con cada gatito
+//Objetos con cada gatito //Esto esta en el localStorage que hemos traido con el fetch
+/*
 const kittenData_1 = {
     image: "https://dev.adalab.es/gato-siames.webp",
     name: "Anastacio",
@@ -38,16 +39,36 @@ const kittenData_3 = {
     desc: " Tienen la cabeza cuadrada y los ojos simétricos, por lo que su bella mirada se ha convertido en una de sus señas de identidad. Sus ojos son grandes y las orejas resultan largas y en punta.",
     race: "Maine Coon",
 };
-
+*/ 
 //const kittenDataList = [kittenData_1, kittenData_2, kittenData_3];
 let kittenDataList = [];
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
-function render() {
-    for (const eachKitten of kittenDataList) {
-        listElement.innerHTML += `<li>${eachKitten.desc.race}`
-        console.log(render);
-    }
+const kittenListStored = JSON.parse(localStorage.getItem('kittensList'));
+
+if (kittenListStored !== null) {
+    kittensList = kittenListStored;
+    renderKittenList(kittenDataList)
+  //si existe el listado de gatitos en el local storage
+  // vuelve a pintar el listado de gatitos
+  //...
+  //completa el código...
+} else {
+  //sino existe el listado de gatitos en el local storage
+  //haz la petición al servidor
+  fetch(SERVER_URL)
+    .then((response) => response.json())
+    .then((data) => {
+        localStorage.setItem('kittenList', JSON.stringify(results));
+        kittenDataList = data.results
+        renderKittenList(kittenDataList)
+      //guarda el listado obtenido en el local storage.
+      //vuelve a pintar el listado de gatitos
+      //completa el código...
+    })
+    .catch((error) => {
+    console.error(error);
+    });
 }
 
 fetch(SERVER_URL, {
@@ -56,13 +77,10 @@ fetch(SERVER_URL, {
   }).then((response) => response.json())
   .then((data)=> {
     console.log(data);
-    kittenDataList = data.results.filter((kitten) => ({
-        desc: kitten.desc,
-        race: kitten.race,
-    }))
-    render();
+    kittenDataList = data.results
+    renderKittenList(kittenDataList)
   })
-  //Completa el código;
+ 
 
 //Funciones
 function renderKitten(kittenData) {
