@@ -11,7 +11,7 @@ const inputDesc = document.querySelector('.js-input-desc');
 const inputPhoto = document.querySelector('.js-input-photo');
 const inputName = document.querySelector('.js-input-name');
 const linkNewFormElememt = document.querySelector('.js-button-new-form');
-const labelMessageError = document.querySelector('.js-label-error');
+const labelMessage = document.querySelector('.js-label-error');
 const input_search_desc = document.querySelector('.js_in_search_desc');
 const input_search_race = document.querySelector('.js_in_search_race');
 const inputRace = document.querySelector('.js-input-race');
@@ -43,7 +43,6 @@ const kittenData_3 = {
 //const kittenDataList = [kittenData_1, kittenData_2, kittenData_3];
 let kittenDataList = [];
 
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
 const kittenListStored = JSON.parse(localStorage.getItem('kittensList'));
 
 if (kittenListStored !== null) {
@@ -59,7 +58,7 @@ if (kittenListStored !== null) {
   fetch(SERVER_URL)
     .then((response) => response.json())
     .then((data) => {
-        localStorage.setItem('kittenList', JSON.stringify(results));
+        localStorage.setItem('kittenList', JSON.stringify(data.results));
         kittenDataList = data.results
         renderKittenList(kittenDataList)
       //guarda el listado obtenido en el local storage.
@@ -134,24 +133,47 @@ function addNewKitten(event) {
     const newKittenDataObject = {
         name: inputName.value,
         desc: inputDesc.value,
-        photo: inputPhoto.value,
+        image: inputPhoto.value,
         race: inputRace.value,
     }
     if (valueDesc === "" || valuePhoto === "" || valueName === "" || valueRace ==="") {
-        labelMessageError.innerHTML = "¡Uy! parece que has olvidado algo";
+        labelMessage.innerHTML = "¡Uy! parece que has olvidado algo";
     } else {
         if (valueDesc !== "" && valuePhoto !== "" && valueName !== "" && valueRace !=="") {
-            labelMessageError.innerHTML = "Mola! Un nuevo gatito en Adalab!";
-            kittenDataList.push(newKittenDataObject);
-            inputDesc.value = "";
-            inputPhoto.value = "";
-            inputName.value = "";
-            inputRace.value = "";
-            renderKittenList(kittenDataList);
+            
+
+        fetch(`https://dev.adalab.es/api/kittens/${GITHUB_USER}`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(newKittenDataObject),
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+                if (data.success) {
+                    labelMessage.innerHTML = "Mola! Un nuevo gatito en Adalab!";
+                    kittenDataList.push(newKittenDataObject);
+                    localStorage.setItem('kittenList', JSON.stringify(kittenDataList));
+                    renderKittenList(kittenDataList);
+                    inputDesc.value = "";
+                    inputPhoto.value = "";
+                    inputName.value = "";
+                    inputRace.value = "";
+                    //Completa y/o modifica el código:
+                    //Agrega el nuevo gatito al listado
+                    //Guarda el listado actualizado en el local stoarge
+                    //Visualiza nuevamente el listado de gatitos
+                    //Limpia los valores de cada input
+                    } else {
+                    //muestra un mensaje de error.
+                    labelMessage.innerHTML = "¡Uy hay un problema con el servidor!";
+                    }
+            });
+
         }
-   
     };
 }  
+
 //Cancelar la búsqueda de un gatito
 function cancelNewKitten(event) {
     event.preventDefault();
